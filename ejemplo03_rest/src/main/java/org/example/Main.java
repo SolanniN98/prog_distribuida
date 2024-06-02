@@ -22,9 +22,12 @@ public class Main {
     static List<Persona> listarPersonas (Request req, Response rsp) {
         rsp.type("application/json");
 
-        var servicio=container.select(ServicioPersona.class).get();
+        ServicioPersona servicio=container.select(ServicioPersona.class).get();
+        List<Persona> listadoPersonas = servicio.buscarPersonas();
 
-        return servicio.buscarPersonas();
+       // rsp.header("Cache-Control", "no-cache");
+
+        return listadoPersonas;
     }
 
     static Persona buscarPersona (Request req, Response rsp) {
@@ -42,6 +45,44 @@ public class Main {
     }
 
 
+    static Persona insertarPersona(Request req, Response rsp) {
+        rsp.type("application/json");
+
+        String jsonPersona = req.body();
+        Persona persona = new Gson().fromJson(jsonPersona, Persona.class);
+
+        ServicioPersona servicio = container.select(ServicioPersona.class).get();
+        Persona insertPersona = servicio.insertar(persona);
+
+        if (insertPersona == null) {
+            halt(400, "Error al insertar persona");
+        }
+
+        return insertPersona;
+    }
+
+    static Persona actualizarPersona(Request req, Response rsp) {
+        rsp.type("application/json");
+        String jsonPersona = req.body();
+        Persona persona = new Gson().fromJson(jsonPersona, Persona.class);
+
+        ServicioPersona servicio = container.select(ServicioPersona.class).get();
+        Persona actualizaPersona = servicio.actualizar(persona);
+
+        return actualizaPersona;
+    }
+
+    static Persona eliminarPersona(Request req, Response rsp) {
+        rsp.type("application/json");
+        String _id=req.params(":id");
+
+        var servicio=container.select(ServicioPersona.class).get();
+        Persona persona=servicio.eliminar(Integer.valueOf(_id));
+
+        return persona;
+
+    }
+
     public static void main(String[] args) {
         //Iniciar contenedor
         container = SeContainerInitializer.newInstance().initialize();
@@ -57,5 +98,9 @@ public class Main {
 
         get("/personas", Main::listarPersonas,gson::toJson);
         get("/personas/:id", Main::buscarPersona,gson::toJson);
+        post("/personas", Main::insertarPersona,gson::toJson);
+        put("/personas", Main::actualizarPersona,gson::toJson);
+        delete("/personas/:id", Main::eliminarPersona);
+
     }
 }

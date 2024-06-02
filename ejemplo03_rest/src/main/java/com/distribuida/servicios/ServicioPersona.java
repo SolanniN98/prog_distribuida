@@ -8,4 +8,7 @@ public interface ServicioPersona {
 
      Persona buscarPersona(Integer id);
      List<Persona> buscarPersonas();
+     Persona insertar(Persona persona);
+     Persona actualizar(Persona persona);
+     Persona eliminar(Integer id);
 }
