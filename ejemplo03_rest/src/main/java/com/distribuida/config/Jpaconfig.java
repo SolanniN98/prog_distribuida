@@ -24,4 +24,6 @@ public class Jpaconfig {
         System.out.println("**** JPA CONFIG::em");
         return emf.createEntityManager();
     }
+
+
 }

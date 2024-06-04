@@ -25,7 +25,7 @@ public class Main {
         ServicioPersona servicio=container.select(ServicioPersona.class).get();
         List<Persona> listadoPersonas = servicio.buscarPersonas();
 
-       // rsp.header("Cache-Control", "no-cache");
+       rsp.header("Cache-Control", "no-cache");
 
         return listadoPersonas;
     }
@@ -72,14 +72,14 @@ public class Main {
         return actualizaPersona;
     }
 
-    static Persona eliminarPersona(Request req, Response rsp) {
+    static String eliminarPersona(Request req, Response rsp) {
         rsp.type("application/json");
         String _id=req.params(":id");
 
         var servicio=container.select(ServicioPersona.class).get();
-        Persona persona=servicio.eliminar(Integer.valueOf(_id));
+        servicio.eliminar(Integer.valueOf(_id));
 
-        return persona;
+        return "Persona Eliminada";
 
     }
 

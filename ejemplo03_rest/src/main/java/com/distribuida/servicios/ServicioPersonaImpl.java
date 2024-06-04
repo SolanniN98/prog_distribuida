@@ -6,6 +6,7 @@ import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 
 import java.util.List;
+
 @ApplicationScoped
 public class ServicioPersonaImpl implements ServicioPersona {
     @Inject
@@ -23,19 +24,43 @@ public class ServicioPersonaImpl implements ServicioPersona {
 
     @Override
     public Persona insertar(Persona persona) {
-        em.persist(persona);
+        var transaction = em.getTransaction();
+        try {
+            transaction.begin();
+            em.persist(persona);
+            transaction.commit();
+        } catch (Exception e) {
+            transaction.rollback();
+        }
+
         return persona;
     }
 
     @Override
     public Persona actualizar(Persona persona) {
-        em.merge(persona);
+
+        var transaction = em.getTransaction();
+        try {
+            transaction.begin();
+            em.merge(persona);
+            transaction.commit();
+        } catch (Exception e) {
+            transaction.rollback();
+        }
+
         return persona;
     }
 
     @Override
-    public Persona eliminar(Integer id) {
-        em.remove(em.find(Persona.class, id));
-        return null;
+    public void eliminar(Integer id) {
+        var transaction = em.getTransaction();
+
+        try {
+            transaction.begin();
+            em.remove(buscarPersona(id));
+            transaction.commit();
+        }catch (Exception e){
+            transaction.rollback();
+        }
     }
 }

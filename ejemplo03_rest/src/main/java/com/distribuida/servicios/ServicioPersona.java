@@ -10,5 +10,5 @@ public interface ServicioPersona {
      List<Persona> buscarPersonas();
      Persona insertar(Persona persona);
      Persona actualizar(Persona persona);
-     Persona eliminar(Integer id);
+     void eliminar(Integer id);
 }
